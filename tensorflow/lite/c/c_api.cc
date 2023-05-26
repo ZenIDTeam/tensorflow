@@ -26,6 +26,7 @@ limitations under the License.
 #include "tensorflow/lite/kernels/internal/compatibility.h"
 #include "tensorflow/lite/model.h"
 #include "tensorflow/lite/version.h"
+#include "mediapipe/util/tflite/operations/transpose_conv_bias.h"
 
 namespace {
 class CallbackErrorReporter : public tflite::ErrorReporter {
@@ -133,6 +134,7 @@ TfLiteInterpreter* TfLiteInterpreterCreate(
     const TfLiteInterpreterOptions* optional_options) {
   std::unique_ptr<tflite::MutableOpResolver> resolver =
       tflite::CreateOpResolver();
+  resolver->AddCustom("Convolution2DTransposeBias", mediapipe::tflite_operations::RegisterConvolution2DTransposeBias());
   return tflite::internal::InterpreterCreateWithOpResolver(
       model, optional_options, resolver.get());
 }

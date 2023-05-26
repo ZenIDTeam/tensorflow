@@ -1,0 +1,16 @@
+diff --git a/mediapipe/util/tflite/operations/BUILD b/mediapipe/util/tflite/operations/BUILD
+index e902906..48c1b01 100644
+--- mediapipe/util/tflite/operations/BUILD
++++ mediapipe/util/tflite/operations/BUILD
+@@ -16,10 +16,7 @@
+ licenses(["notice"])
+ 
+ package(default_visibility = [
+-    "//research/aimatter/tflite:__subpackages__",
+-    "//mediapipe:__subpackages__",
+-    # For automated benchmarking of Camera models by TFLite team.
+-    "//learning/brain/models/app_benchmarks/camera_models:__subpackages__",
++    "//visibility:public",
+ ])
+ 
+ CUSTOM_OPS_PACKAGE = "@org_tensorflow//tensorflow/lite/delegates/gpu/common/mediapipe"
