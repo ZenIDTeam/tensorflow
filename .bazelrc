@@ -623,3 +623,9 @@ build:ubsan --copt -O3
 build:ubsan --copt -fno-omit-frame-pointer
 build:ubsan --linkopt -fsanitize=undefined
 build:ubsan --linkopt -lubsan
+
+build:wasm --crosstool_top=@emsdk//emscripten_toolchain:everything
+build:wasm --cpu=wasm
+build:wasm --host_crosstool_top=@bazel_tools//tools/cpp:toolchain
+# This is required in order to correctly compile flatc and other build tools for the host platform!
+build:wasm --distinct_host_configuration=true

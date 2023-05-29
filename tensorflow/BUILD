@@ -176,7 +176,7 @@ config_setting(
         {},
     ),
     values = if_oss(
-        {"crosstool_top": "//external:android/emscripten"},
+        {"crosstool_top": "@emsdk//emscripten_toolchain:everything"},
         {},
     ),
     visibility = ["//visibility:public"],

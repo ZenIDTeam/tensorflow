@@ -21,3 +21,17 @@ tf_workspace1()
 load("@//tensorflow:workspace0.bzl", "tf_workspace0")
 
 tf_workspace0()
+
+load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+http_archive(
+    name = "emsdk",
+    sha256 = "c3c80dfe82fb448751d1c48200e5143aeca0f0db1d021db4b63655a9d9470cd8",
+    strip_prefix = "emsdk-3.1.37/bazel",
+    url = "https://github.com/emscripten-core/emsdk/archive/refs/tags/3.1.37.tar.gz",
+)
+
+load("@emsdk//:deps.bzl", emsdk_deps = "deps")
+emsdk_deps()
+
+load("@emsdk//:emscripten_deps.bzl", emsdk_emscripten_deps = "emscripten_deps")
+emsdk_emscripten_deps(emscripten_version = "3.1.37")
