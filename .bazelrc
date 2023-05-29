@@ -706,3 +706,9 @@ build:tf_fuzztest --action_env=CXX=clang++
 build:tf_fuzztest --spawn_strategy=sandboxed
 build:tf_fuzztest --config=monolithic
 build:tf_fuzztest --@libjpeg_turbo//:noasm=yes
+
+build:wasm --crosstool_top=@emsdk//emscripten_toolchain:everything
+build:wasm --cpu=wasm
+build:wasm --host_crosstool_top=@bazel_tools//tools/cpp:toolchain
+# This is required in order to correctly compile flatc and other build tools for the host platform!
+build:wasm --distinct_host_configuration=true
