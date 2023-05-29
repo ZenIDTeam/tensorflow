@@ -36,6 +36,10 @@ tflite_cc_shared_object(
         "//tensorflow:windows": [],
         "//conditions:default": [
             "-Wl,--version-script,$(location //tensorflow/lite/c:version_script.lds)",
+            # Support Safari 12.0, see https://github.com/emscripten-core/emscripten/blob/main/ChangeLog.md for 3.1.26
+            #"-pthread -s MIN_SAFARI_VERSION=120000 -s LINKABLE -r",
+            # Not needed anymore, signext and mutable globals are supported since Safari 14: https://caniuse.com/wasm-signext
+            "-pthread -s LINKABLE -r",
         ],
     }),
     per_os_targets = True,

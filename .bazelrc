@@ -752,3 +752,18 @@ test:macos_arm64_pycpp_test_filters --build_tag_filters=-no_oss,-oss_excluded,-o
 test:macos_arm64_pycpp_test_filters --test_lang_filters=cc,py
 test:macos_arm64_pycpp_test --config=macos_arm64_pycpp_test_filters -- //tensorflow/... -//tensorflow/compiler/tf2tensorrt/... -//tensorflow/compiler/xla/service/gpu/... -//tensorflow/compiler/xla/tools/multihost_hlo_runner/... -//tensorflow/compiler/xrt/... -//tensorflow/core/tpu/... -//tensorflow/go/... -//tensorflow/java/... -//tensorflow/python/integration_testing/... -//tensorflow/tools/toolchains/... -//tensorflow/lite/... -//tensorflow/compiler/aot/... -//tensorflow/compiler/xla/tests:local_client_aot_test_computation -//tensorflow/compiler/xla/tests:local_client_aot_test_helper -//tensorflow/compiler/xla/tests:local_client_aot_test
 # END TF TEST SUITE OPTIONS
+
+build:wasm --crosstool_top=@emsdk//emscripten_toolchain:everything
+build:wasm --cpu=wasm
+build:wasm --host_crosstool_top=@bazel_tools//tools/cpp:toolchain
+# This is required in order to correctly compile flatc and other build tools for the host platform!
+build:wasm --distinct_host_configuration=true
+build:wasm --copt='-pthread' --copt='-Wno-error' --copt='-Wno-all' --copt='-Wno-enum-compare'
+
+build:wasm_simd --crosstool_top=@emsdk//emscripten_toolchain:everything
+build:wasm_simd --cpu=wasm
+build:wasm_simd --host_crosstool_top=@bazel_tools//tools/cpp:toolchain
+# This is required in order to correctly compile flatc and other build tools for the host platform!
+build:wasm_simd --distinct_host_configuration=true
+build:wasm_simd --copt='-msimd128' --copt='-pthread' --copt='-Wno-error' --copt='-Wno-all' --copt='-Wno-enum-compare'
+build:wasm_simd --features='wasm_simd'
