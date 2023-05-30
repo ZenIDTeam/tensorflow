@@ -37,13 +37,13 @@ tf_workspace0()
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 http_archive(
     name = "emsdk",
-    sha256 = "c3c80dfe82fb448751d1c48200e5143aeca0f0db1d021db4b63655a9d9470cd8",
-    strip_prefix = "emsdk-3.1.37/bazel",
-    url = "https://github.com/emscripten-core/emsdk/archive/refs/tags/3.1.37.tar.gz",
+    sha256 = "a2c5f3cf36525cf6a4b569f9d25500e3b2f7341c6e6779b54bcf4703b834202d",
+    strip_prefix = "emsdk-3.1.0/bazel",
+    url = "https://github.com/emscripten-core/emsdk/archive/refs/tags/3.1.0.tar.gz",
 )
 
 load("@emsdk//:deps.bzl", emsdk_deps = "deps")
 emsdk_deps()
 
 load("@emsdk//:emscripten_deps.bzl", emsdk_emscripten_deps = "emscripten_deps")
-emsdk_emscripten_deps(emscripten_version = "3.1.37")
+emsdk_emscripten_deps(emscripten_version = "3.1.0")
