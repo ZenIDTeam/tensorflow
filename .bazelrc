@@ -156,6 +156,10 @@ build:libc++ --linkopt -fuse-ld=lld
 # Android configs. Bazel needs to have --cpu and --fat_apk_cpu both set to the
 # target CPU to build transient dependencies correctly. See
 # https://docs.bazel.build/versions/master/user-manual.html#flag--fat_apk_cpu
+#build:android --crosstool_top=@androidndk//:toolchain
+# we alias @andoirdndk//:toolchain to //external:andoird/crosstool in WORKSPACE
+# to make all the cpu config settings work in cpuinfo and xnnpack, they expect
+# only this specific crosstool_top for android detection.
 build:android --crosstool_top=//external:android/crosstool
 build:android --host_crosstool_top=@bazel_tools//tools/cpp:toolchain
 build:android_arm --config=android

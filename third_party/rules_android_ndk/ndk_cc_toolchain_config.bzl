@@ -1457,6 +1457,7 @@ def ndk_cc_toolchain_config_rule_implementation(ctx):
         ctx = ctx,
         **ndk_cc_toolchain_config(
             api_level = ctx.attr.api_level,
+            host_system_name = "x86_64-linux-gnu",
             target_system_name = ctx.attr.target_system_name,
             tools = {
                 "clang": "bin/clang",

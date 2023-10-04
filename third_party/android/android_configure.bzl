@@ -28,11 +28,6 @@ _ANDROID_SDK_REPO_TEMPLATE = """
 """
 
 _ANDROID_NDK_REPO_TEMPLATE = """
-    native.android_ndk_repository(
-        name="androidndk",
-        path="%s",
-        api_level=%s,
-    )
 """
 
 def _android_autoconf_impl(repository_ctx):
@@ -54,8 +49,6 @@ def _android_autoconf_impl(repository_ctx):
         )
 
     ndk_rule = ""
-    if all([ndk_home, ndk_api_level]):
-        ndk_rule = _ANDROID_NDK_REPO_TEMPLATE % (ndk_home, ndk_api_level)
 
     if ndk_rule == "" and sdk_rule == "":
         sdk_rule = "pass"

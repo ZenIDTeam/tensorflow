@@ -69,7 +69,7 @@ def _android_ndk_repository_impl(ctx):
     )
 
     ctx.template(
-        "%s/BUILD" % clang_directory,
+        "%s/BUILD.bazel" % clang_directory,
         Label("//:BUILD.ndk_clang.tpl"),
         {
             "{repository_name}": repository_name,

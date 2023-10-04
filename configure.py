@@ -803,6 +803,11 @@ def get_ndk_api_level(environ_cp, android_ndk_home_path):
     ndk_version = revision.group(1)
   else:
     raise Exception('Unable to parse NDK revision.')
+  if int(ndk_version) == 23:
+    return 21
+  else:
+    raise "check api version supported by NDK " + str(ndk_version) + " and change this"
+
   if int(ndk_version) not in _SUPPORTED_ANDROID_NDK_VERSIONS:
     print('WARNING: The NDK version in %s is %s, which is not '
           'supported by Bazel (officially supported versions: %s). Please use '

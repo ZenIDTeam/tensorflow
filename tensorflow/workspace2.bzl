@@ -50,6 +50,8 @@ load("@tf_toolchains//toolchains/remote_config:configs.bzl", "initialize_rbe_con
 load("@tf_toolchains//toolchains/remote:configure.bzl", "remote_execution_configure")
 load("@tf_toolchains//toolchains/clang6:repo.bzl", "clang6_configure")
 
+load("@rules_android_ndk//:rules.bzl", "android_ndk_repository")
+
 def _initialize_third_party():
     """ Load third party repositories.  See above load() statements. """
     FP16()
@@ -1083,6 +1085,8 @@ def workspace():
     # Check the bazel version before executing any repository rules, in case
     # those rules rely on the version we require here.
     check_bazel_version_at_least("1.0.0")
+
+    android_ndk_repository(name = "androidndk")
 
     # Initialize toolchains and platforms.
     _tf_toolchains()

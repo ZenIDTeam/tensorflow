@@ -1,5 +1,14 @@
 workspace(name = "org_tensorflow")
 
+local_repository(
+    name = "rules_android_ndk",
+    path = "third_party/rules_android_ndk",
+)
+bind(
+    name = "android/crosstool",
+    actual = "@androidndk//:toolchain",
+)
+
 # Initialize the TensorFlow repository and all dependencies.
 #
 # The cascade of load() statements and tf_workspace?() calls works around the
