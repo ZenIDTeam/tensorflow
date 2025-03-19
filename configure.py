@@ -803,9 +803,13 @@ def get_ndk_api_level(environ_cp, android_ndk_home_path):
     ndk_version = revision.group(1)
   else:
     raise Exception('Unable to parse NDK revision.')
-  # r26 minimum supported API level is 21
-  # r27 unknown as of yet
-  if int(ndk_version) <= 26 and int(ndk_version) >= 21:
+
+  # Just use API_LEVEL defined in our Dockerfile.
+  # This way we won't have to upgrade this file on each NDK version.
+  return int(os.environ.get('API_LEVEL'))
+
+  # r27 minimum supported API level is 21
+  if int(ndk_version) <= 27 and int(ndk_version) >= 21:
     return 21
   else:
     raise "check api version supported by NDK " + str(ndk_version) + " and change this"
