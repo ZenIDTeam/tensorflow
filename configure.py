@@ -739,6 +739,11 @@ def get_ndk_api_level(environ_cp, android_ndk_home_path):
     ndk_version = revision.group(1)
   else:
     raise Exception('Unable to parse NDK revision.')
+
+  # Just use API_LEVEL defined in our Dockerfile.
+  # This way we won't have to upgrade this file on each NDK version.
+  return int(os.environ.get('API_LEVEL'))
+
   if int(ndk_version) not in _SUPPORTED_ANDROID_NDK_VERSIONS:
     print('WARNING: The NDK version in %s is %s, which is not '
           'supported by Bazel (officially supported versions: %s). Please use '
