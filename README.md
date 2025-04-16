@@ -14,6 +14,6 @@
  - `git checkout v2.12.0`
 2. add your commits on top
 3. tag it and push the tag to this repo
-   **Make sure you don't have extra random tags from upstream repo at this point!**
  - `git tag v2.12.0-custom-ops`
- - `git push --tags origin v2.12.0-custom-ops`
+ - `git push origin tag v2.12.0-custom-ops --no-tags`
+ - `git push origin tag v2.12.0 --no-tags` (push the base version tag too)
