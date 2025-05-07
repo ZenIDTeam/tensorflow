@@ -1,0 +1,11 @@
+index f944cb1..eec96e0 100644
+--- BUILD.ndk_root.tpl
++++ BUILD.ndk_root.tpl
+@@ -1,6 +1,6 @@
+ """Top-level aliases."""
+ 
+-load("@rules_cc//cc:cc_library.bzl", "cc_library")
++load("@local_tsl//tsl/platform:rules_cc.bzl", "cc_library")
+ load("//:target_systems.bzl", "CPU_CONSTRAINT", "TARGET_SYSTEM_NAMES")
+ 
+ package(default_visibility = ["//visibility:public"])

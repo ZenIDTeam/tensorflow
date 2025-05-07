@@ -51,6 +51,7 @@ load("//third_party/triton:workspace.bzl", triton = "repo")
 
 # Import external repository rules.
 load("@bazel_tools//tools/build_defs/repo:java.bzl", "java_import_external")
+load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 load("@tf_runtime//:dependencies.bzl", "tfrt_dependencies")
 load("//tensorflow/tools/toolchains/remote_config:configs.bzl", "initialize_rbe_configs")
 load("//tensorflow/tools/toolchains/remote:configure.bzl", "remote_execution_configure")
@@ -713,11 +714,14 @@ def _tf_repositories():
         urls = tf_mirror_urls("https://github.com/bazelbuild/rules_android/archive/v0.1.1.zip"),
     )
 
-    tf_http_archive(
+    http_archive(
         name = "rules_android_ndk",
-        sha256 = "b29409496439cdcdb50a8e161c4953ca78a548e16d3ee729a1b5cd719ffdacbf",
-        strip_prefix = "rules_android_ndk-81ec8b79dc50ee97e336a25724fdbb28e33b8d41",
-        urls = tf_mirror_urls("https://github.com/bazelbuild/rules_android_ndk/archive/81ec8b79dc50ee97e336a25724fdbb28e33b8d41.zip"),
+        sha256 = "91c8294b42195455456cd2817f7d6404dfa51972075b0753a87b11402a57630f",
+        strip_prefix = "rules_android_ndk-66e0427c651d9ddf3279c279965ff9a554895221",
+        urls = ["https://github.com/bazelbuild/rules_android_ndk/archive/66e0427c651d9ddf3279c279965ff9a554895221.zip"],
+       patches = [
+            "//tensorflow:rules_android_ndk.patch"
+       ]
     )
 
     # Apple and Swift rules.
