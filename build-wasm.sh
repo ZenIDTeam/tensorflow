@@ -10,14 +10,6 @@ echo "emnm -C libtflite_c.so | sed -ne '/U /p' | less"
 echo "and look for symbols that aren't in the standard libraries"
 echo "Good luck!"
 echo
-echo "Oh, and one more thing: it will complain about assignment to const member in stl_emulator.h"
-echo "Just open bazel-out/wasm-opt/bin/external/flatbuffers/src/_virtual_includes/flatbuffers/flatbuffers/stl_emulation.h"
-echo "and remove the const from count_"
-echo "See https://github.com/google/flatbuffers/commit/20aad0c41e1252b04c"
-echo
-echo "Oh, and yet another thing: XNNPACK allocator is broken for wasm in this version."
-echo "Open bazel-tensorflow/external/XNNPACK/src/allocator.c and change return res; to return malloc(size);"
-echo
 read -p "(Press Enter to continue) "
 
 emcc --version &> /dev/null
