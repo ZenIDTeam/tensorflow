@@ -50,6 +50,7 @@ load("//third_party/tensorrt:workspace.bzl", tensorrt = "repo")
 load("//third_party/triton:workspace.bzl", triton = "repo")
 
 # Import external repository rules.
+load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 load("@bazel_tools//tools/build_defs/repo:java.bzl", "java_import_external")
 load("@tf_runtime//:dependencies.bzl", "tfrt_dependencies")
 load("//tensorflow/tools/toolchains/remote_config:configs.bzl", "initialize_rbe_configs")
@@ -148,11 +149,14 @@ def _tf_repositories():
     # how to manually upload a mirror if necessary, see go/tf_mirror_md.
 
     # LINT.IfChange
-    tf_http_archive(
+    http_archive(
         name = "XNNPACK",
         sha256 = "f9c5e1cf1bcc7920985df92322b95e537f284914339c0836e91c352f51345182",
         strip_prefix = "XNNPACK-bbbaa7352a3ea729987d3e654d37be93e8009691",
-        urls = tf_mirror_urls("https://github.com/google/XNNPACK/archive/bbbaa7352a3ea729987d3e654d37be93e8009691.zip"),
+        urls = ["https://github.com/google/XNNPACK/archive/bbbaa7352a3ea729987d3e654d37be93e8009691.zip"],
+        patches = [
+            "//tensorflow:xnn_platform_jit.patch"
+        ]
     )
     # LINT.ThenChange(//tensorflow/lite/tools/cmake/modules/xnnpack.cmake)
 

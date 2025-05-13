@@ -1,0 +1,11 @@
+--- src/memory.c
++++ src/memory.c
+@@ -236,7 +236,7 @@
+   return xnn_status_success;
+ }
+
+-#if XNN_PLATFORM_WEB
++#if XNN_PLATFORM_WEB && XNN_PLATFORM_JIT
+ EM_JS(int, xnnLoadWasmModuleJS, (const uint8_t* code, int offset, int offset_end, int invalid_function_index), {
+     const tableOriginalSize = wasmTable.length;
+     const binary = new Uint8Array(HEAPU8.slice(code + offset, code + offset_end));

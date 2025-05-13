@@ -759,6 +759,7 @@ build:wasm --host_crosstool_top=@bazel_tools//tools/cpp:toolchain
 # This is required in order to correctly compile flatc and other build tools for the host platform!
 build:wasm --distinct_host_configuration=true
 build:wasm --copt='-pthread' --copt='-Wno-error' --copt='-Wno-all' --copt='-Wno-enum-compare'
+build:wasm --define xnn_platform_jit=false
 
 build:wasm_simd --crosstool_top=@emsdk//emscripten_toolchain:everything
 build:wasm_simd --cpu=wasm
@@ -767,3 +768,4 @@ build:wasm_simd --host_crosstool_top=@bazel_tools//tools/cpp:toolchain
 build:wasm_simd --distinct_host_configuration=true
 build:wasm_simd --copt='-msimd128' --copt='-pthread' --copt='-Wno-error' --copt='-Wno-all' --copt='-Wno-enum-compare'
 build:wasm_simd --features='wasm_simd'
+build:wasm_simd --define xnn_platform_jit=false
