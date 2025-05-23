@@ -188,6 +188,7 @@ ios_static_framework(
     minimum_os_version = TFL_MINIMUM_OS_VERSION,
     deps = [
         ":tensorflow_lite_c",
+        "//tensorflow/lite/delegates/coreml:coreml_delegate",
     ],
 )
 
