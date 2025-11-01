@@ -22,7 +22,9 @@ limitations under the License.
 #else
 #include <errno.h>
 #include <fcntl.h>
+#ifndef __EMSCRIPTEN__
 #include <sys/file.h>
+#endif
 #include <sys/stat.h>
 #include <unistd.h>
 
@@ -189,7 +191,11 @@ TfLiteStatus SerializationEntry::GetData(TfLiteContext* context,
                        filepath.c_str(), std::strerror(errno));
     return kTfLiteDelegateDataNotFound;
   }
+  #ifdef __EMSCRIPTEN__
+  int lock_status = 0;
+  #else
   int lock_status = flock(fd, LOCK_EX);
+  #endif
   if (lock_status < 0) {
     close(fd);
     TF_LITE_KERNEL_LOG(context, "Could not flock %s: %s", filepath.c_str(),
