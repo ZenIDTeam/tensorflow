@@ -115,6 +115,7 @@ tflite_cc_library_with_c_headers_test(
         "//tensorflow/lite/kernels/internal:compatibility",
         "//tensorflow/lite/profiling/telemetry:profiler",
         "//tensorflow/lite/schema:schema_fbs",
+        "@mediapipe//mediapipe/util/tflite/operations:transpose_conv_bias",
     ],
     alwayslink = 1,  # Why?? TODO(b/161243354): eliminate this.
 )
