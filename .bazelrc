@@ -922,3 +922,22 @@ build:rbe_cross_compile_macos_x86 --jobs=100
 test:rbe_cross_compile_macos_x86 --jobs=100
 # END MACOS CROSS-COMPILE CONFIGS
 # END CROSS-COMPILE CONFIGS
+
+# WebAssembly build configuration (added by ZenID for 2.19.1-wasm)
+build:wasm --crosstool_top=@emsdk//emscripten_toolchain:everything
+build:wasm --cpu=wasm
+build:wasm --host_crosstool_top=@bazel_tools//tools/cpp:toolchain
+# This is required in order to correctly compile flatc and other build tools for the host platform!
+build:wasm --distinct_host_configuration=true
+build:wasm --copt='-msimd128' --copt='-Wno-error' --copt='-w'
+build:wasm --features='wasm_simd'
+build:wasm --define xnn_platform_jit=false
+
+build:wasm_mt --crosstool_top=@emsdk//emscripten_toolchain:everything
+build:wasm_mt --cpu=wasm
+build:wasm_mt --host_crosstool_top=@bazel_tools//tools/cpp:toolchain
+# This is required in order to correctly compile flatc and other build tools for the host platform!
+build:wasm_mt --distinct_host_configuration=true
+build:wasm_mt --copt='-pthread' --copt='-msimd128' --copt='-Wno-error' --copt='-w'
+build:wasm_mt --features='wasm_simd'
+build:wasm_mt --define xnn_platform_jit=false
