@@ -52,5 +52,6 @@ Podfile.lock
 Pods
 xcuserdata
 out-wasm/
+out-windows/
 # Created by the wasm build
 /third_party/xla/third_party/tsl/WORKSPACE
