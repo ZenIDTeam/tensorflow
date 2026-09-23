@@ -35,8 +35,7 @@ rm -rf "$STAGE"
 mkdir -p "$STAGE/lib" "$STAGE/pack/include/flatbuffers"
 for arch in ios_arm64 ios_sim_arm64 ios_x86_64; do
   bazel build "${OPTS[@]}" --config=$arch "$TARGET"
-  bin=$(bazel info "${OPTS[@]}" --config=$arch bazel-bin 2>/dev/null)
-  unzip -p "$bin/tensorflow/lite/ios/TensorFlowLiteC_static_framework.zip" TensorFlowLiteC.framework/TensorFlowLiteC \
+  unzip -p bazel-bin/tensorflow/lite/ios/TensorFlowLiteC_static_framework.zip TensorFlowLiteC.framework/TensorFlowLiteC \
     > "$STAGE/lib/$arch.a"
   lipo -info "$STAGE/lib/$arch.a"
 done
@@ -50,8 +49,7 @@ xcodebuild -create-xcframework -library "$STAGE/sim/$SIM_LIB" -library "$STAGE/d
 # include/ = headers under tensorflow/lite and tensorflow/compiler/mlir/lite (the C API includes them),
 # flatc-generated headers, and the flatbuffers headers.
 find tensorflow/lite tensorflow/compiler/mlir/lite -name '*.h' -print0 | tar --null -cf - -T - | tar -xf - -C "$STAGE/pack/include"
-bin=$(bazel info "${OPTS[@]}" --config=ios_arm64 bazel-bin 2>/dev/null)
-(cd "$bin" && { find tensorflow/lite tensorflow/compiler/mlir/lite -name '*_generated.h' -print0 2>/dev/null || true; } \
+(cd bazel-bin/ &&{ find tensorflow/lite tensorflow/compiler/mlir/lite -name '*_generated.h' -print0 2>/dev/null || true; } \
   | tar --null -cf - -T -) | tar -xkf - -C "$STAGE/pack/include"
 cp -R "$OB/external/flatbuffers/include/flatbuffers/." "$STAGE/pack/include/flatbuffers/"
 
