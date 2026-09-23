@@ -55,5 +55,6 @@ out-wasm/
 out-windows/
 out-android/
 out-linux/
+out-ios/
 # Created by the wasm build
 /third_party/xla/third_party/tsl/WORKSPACE
