@@ -53,5 +53,6 @@ Pods
 xcuserdata
 out-wasm/
 out-windows/
+out-android/
 # Created by the wasm build
 /third_party/xla/third_party/tsl/WORKSPACE

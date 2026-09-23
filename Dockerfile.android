@@ -1,0 +1,28 @@
+# Build environment for build-android.sh: Android NDK r27b, SDK build-tools 30.0.2 and platform 21,
+# plus bazelisk (the Bazel version comes from .bazelversion).
+FROM ubuntu:22.04
+
+RUN apt-get -qq update \
+ && DEBIAN_FRONTEND=noninteractive apt-get -qq install -y --no-install-recommends \
+      build-essential ca-certificates curl git patch python3 unzip zip \
+ && rm -rf /var/lib/apt/lists/*
+
+RUN curl -fsSL -o /usr/local/bin/bazel \
+      https://github.com/bazelbuild/bazelisk/releases/download/v1.25.0/bazelisk-linux-amd64 \
+ && chmod +x /usr/local/bin/bazel
+
+ENV ANDROID_NDK_HOME=/opt/android-ndk \
+    ANDROID_SDK_HOME=/opt/android-sdk
+
+RUN cd /tmp \
+ && curl -fsSL -o ndk.zip https://dl.google.com/android/repository/android-ndk-r27b-linux.zip \
+ && unzip -q ndk.zip && mv android-ndk-r27b "$ANDROID_NDK_HOME" \
+ && curl -fsSL -o bt.zip https://dl.google.com/android/repository/build-tools_r30.0.2-linux.zip \
+ && unzip -q bt.zip && mkdir -p "$ANDROID_SDK_HOME/build-tools" && mv android-* "$ANDROID_SDK_HOME/build-tools/30.0.2" \
+ && curl -fsSL -o pl.zip https://dl.google.com/android/repository/android-21_r02.zip \
+ && unzip -q pl.zip && mkdir -p "$ANDROID_SDK_HOME/platforms" && mv android-* "$ANDROID_SDK_HOME/platforms/android-21" \
+ && rm -f *.zip \
+ && ls "$ANDROID_SDK_HOME/platforms/android-21/android.jar" "$ANDROID_SDK_HOME/build-tools/30.0.2/aapt"
+
+# Bazel caches live on the /cache volume, so rebuilds are incremental.
+ENV BAZELISK_HOME=/cache/bazelisk
