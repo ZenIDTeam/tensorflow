@@ -1,7 +1,7 @@
 #!/bin/bash
 # Builds TFLite (C API + XNNPACK delegate) as static WebAssembly libraries with emscripten 4.0.13 and packs
-# them for ZenID: out-wasm/tflite-<version>-wasm-emsdk-4.0.13.tar.gz (single thread + pthreads) and
-# ...-relaxed.tar.gz (pthreads library built with relaxed SIMD). Run from the repository root:
+# them for ZenID into out-wasm/tflite-<version>-wasm-emsdk-4.0.13.tar.gz: lib/libtflite_c.a (single thread),
+# lib/libtflite_c-mt.a (pthreads) and lib/libtflite_c-mt-relaxed.a (pthreads, relaxed SIMD). Run from the repository root:
 #
 #   docker build -t zenid-tflite-wasm -f Dockerfile.wasm .
 #   docker run --rm -v "$PWD:/src" -v zenid-tflite-cache:/cache -w /src zenid-tflite-wasm ./build-wasm.sh [st] [mt] [mt-relaxed]
@@ -69,14 +69,17 @@ make_include() {
   cp -r "$ob/external/flatbuffers/include/flatbuffers/." "$STAGE/include/flatbuffers/"
 }
 
-pack() {  # pack <tarball name> <pthreads library file>
-  local dir=/tmp/pack/tflite-$VERSION-wasm
+pack() {
+  local name=tflite-$VERSION-wasm-emsdk-4.0.13.tar.gz dir=/tmp/pack/tflite-$VERSION-wasm v lib
   rm -rf /tmp/pack && mkdir -p "$dir/lib"
   cp -r "$STAGE/include" "$dir/"
-  cp "$STAGE/lib/libtflite_c.a" "$dir/lib/libtflite_c.a"
-  cp "$STAGE/lib/$2" "$dir/lib/libtflite_c-mt.a"
-  tar czf "$OUT/$1" -C /tmp/pack "tflite-$VERSION-wasm"
-  (cd "$OUT" && md5sum "$1")
+  for v in st mt mt-relaxed; do
+    lib=$(lib_name "$v")
+    [ -f "$STAGE/lib/$lib" ] || { echo "$lib missing, build variant $v first" >&2; exit 1; }
+    cp "$STAGE/lib/$lib" "$dir/lib/"
+  done
+  tar czf "$OUT/$name" -C /tmp/pack "tflite-$VERSION-wasm"
+  (cd "$OUT" && md5sum "$name")
 }
 
 variants=("$@"); [ ${#variants[@]} -gt 0 ] || variants=(st mt mt-relaxed)
@@ -84,8 +87,4 @@ for v in "${variants[@]}"; do build_variant "$v"; done
 
 mkdir -p "$OUT"
 make_include
-[ -f "$STAGE/lib/libtflite_c.a" ] || { echo "single-thread library missing, build variant st first" >&2; exit 1; }
-base=tflite-$VERSION-wasm-emsdk-4.0.13
-if [ -f "$STAGE/lib/libtflite_c-mt.a" ]; then pack "$base.tar.gz" libtflite_c-mt.a; fi
-# The relaxed tarball keeps the normal single-thread library; only the pthreads library uses relaxed SIMD.
-if [ -f "$STAGE/lib/libtflite_c-mt-relaxed.a" ]; then pack "$base-relaxed.tar.gz" libtflite_c-mt-relaxed.a; fi
+pack
