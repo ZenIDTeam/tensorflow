@@ -950,3 +950,13 @@ build:wasm_mt_relaxed --distinct_host_configuration=true
 build:wasm_mt_relaxed --copt=-pthread --copt=-msimd128 --copt=-mrelaxed-simd --copt=-Wno-error --copt=-w
 build:wasm_mt_relaxed --features=wasm_simd --features=wasm_relaxed_simd
 build:wasm_mt_relaxed --define=xnn_platform_jit=false
+
+# Linux shared library builds (ZenID): see build-linux.sh and Dockerfile.linux. libstdc++ and libgcc are linked
+# statically. The x86_64 build uses the auto-configured toolchain (CC=clang 18). The aarch64 build uses the
+# TensorFlow cross-compile toolchain; its sysroot has no libstdc++.so, so -lstdc++ links libstdc++.a.
+build:zenid_linux_x86_64 --repo_env=BAZEL_LINKLIBS=-l%:libstdc++.a:-lm
+build:zenid_linux_x86_64 --linkopt=-static-libgcc
+build:zenid_linux_x86_64 --strip=always
+build:zenid_linux_aarch64 --config=cross_compile_linux_arm64
+build:zenid_linux_aarch64 --linkopt=-static-libgcc
+build:zenid_linux_aarch64 --strip=always

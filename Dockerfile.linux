@@ -1,0 +1,41 @@
+# Build environment for build-linux.sh: Ubuntu 20.04 (glibc 2.31, so the library runs on older distros), clang 18,
+# an arm64 sysroot for the aarch64 cross build, and bazelisk (the Bazel version comes from .bazelversion).
+FROM ubuntu:20.04
+
+ARG DEBIAN_FRONTEND=noninteractive
+
+RUN sed -i 's/^deb /deb [arch=amd64] /' /etc/apt/sources.list \
+ && printf 'deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports focal%s main universe\n' '' -updates -security \
+      > /etc/apt/sources.list.d/arm64.list \
+ && dpkg --add-architecture arm64 \
+ && apt-get -qq update \
+ && apt-get -qq install -y --no-install-recommends ca-certificates curl gnupg git patch unzip zip python3 binutils file \
+      libstdc++-10-dev \
+ && curl -fsSL https://apt.llvm.org/llvm-snapshot.gpg.key | gpg --dearmor -o /usr/share/keyrings/llvm.gpg \
+ && echo 'deb [arch=amd64 signed-by=/usr/share/keyrings/llvm.gpg] http://apt.llvm.org/focal/ llvm-toolchain-focal-18 main' \
+      > /etc/apt/sources.list.d/llvm.list \
+ && apt-get -qq update \
+ && apt-get -qq install -y --no-install-recommends clang-18 lld-18 llvm-18 \
+ && rm -rf /var/lib/apt/lists/*
+
+# Sysroots for the TensorFlow cross-compile toolchain (tensorflow/tools/toolchains/cross_compile/cc), which expects
+# clang in /usr/lib/llvm-18, the x86_64 (host) sysroot in /dt9 and the aarch64 sysroot in /dt10.
+# /dt10 is made from the Ubuntu 20.04 arm64 packages. Absolute symlinks are redirected into /dt10.
+# libstdc++.so is removed so that -lstdc++ links libstdc++.a: the library must not depend on the distro libstdc++.
+RUN apt-get -qq update && mkdir /tmp/debs && cd /tmp/debs \
+ && apt-get -qq download libc6:arm64 libc6-dev:arm64 linux-libc-dev:arm64 libgcc-s1:arm64 libgcc-10-dev:arm64 \
+      libstdc++6:arm64 libstdc++-10-dev:arm64 \
+ && for f in *.deb; do dpkg -x "$f" /dt10; done \
+ && cd / && rm -rf /tmp/debs /var/lib/apt/lists/* \
+ && find /dt10 -type l -lname '/*' | while read -r l; do ln -sfn "/dt10$(readlink "$l")" "$l"; done \
+ && rm /dt10/usr/lib/gcc/aarch64-linux-gnu/10/libstdc++.so \
+ && ln -s / /dt9
+
+RUN curl -fsSL -o /usr/local/bin/bazel \
+      https://github.com/bazelbuild/bazelisk/releases/download/v1.25.0/bazelisk-linux-amd64 \
+ && chmod +x /usr/local/bin/bazel
+
+# The x86_64 build uses the Bazel auto-configured C++ toolchain, which takes the compiler from CC.
+ENV CC=/usr/lib/llvm-18/bin/clang
+# Bazel caches live on the /cache volume, so rebuilds are incremental.
+ENV BAZELISK_HOME=/cache/bazelisk
