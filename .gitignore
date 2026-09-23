@@ -51,3 +51,6 @@ gradleBuild
 Podfile.lock
 Pods
 xcuserdata
+out-wasm/
+# Created by the wasm build
+/third_party/xla/third_party/tsl/WORKSPACE

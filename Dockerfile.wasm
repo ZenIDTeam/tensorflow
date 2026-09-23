@@ -1,0 +1,13 @@
+# Build environment for build-wasm.sh: emscripten 4.0.13 plus bazelisk (the Bazel version comes from .bazelversion).
+FROM emscripten/emsdk:4.0.13
+
+RUN apt-get -qq update \
+ && DEBIAN_FRONTEND=noninteractive apt-get -qq install -y --no-install-recommends git patch unzip zip \
+ && rm -rf /var/lib/apt/lists/*
+
+RUN curl -fsSL -o /usr/local/bin/bazel \
+      https://github.com/bazelbuild/bazelisk/releases/download/v1.25.0/bazelisk-linux-amd64 \
+ && chmod +x /usr/local/bin/bazel
+
+# Bazel caches live on the /cache volume, so rebuilds are incremental.
+ENV BAZELISK_HOME=/cache/bazelisk

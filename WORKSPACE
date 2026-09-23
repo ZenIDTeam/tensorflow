@@ -117,3 +117,27 @@ load(
 )
 
 nccl_configure(name = "local_config_nccl")
+
+# WebAssembly / Emscripten toolchain (ZenID). emsdk 4.0.6 is the last emsdk with WORKSPACE support;
+# the 4.0.3 rules are patched to know emscripten 4.0.13 (clang 22).
+load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+
+http_archive(
+    name = "emsdk",
+    patches = ["//tensorflow:emsdk_revision_list.patch"],
+    sha256 = "91f711089f73d385295246beec35a7b4302e1732f5d7406ee792065fea0a0b65",
+    strip_prefix = "emsdk-4.0.3/bazel",
+    url = "https://github.com/emscripten-core/emsdk/archive/refs/tags/4.0.3.tar.gz",
+)
+
+load("@emsdk//:deps.bzl", emsdk_deps = "deps")
+
+emsdk_deps()
+
+load("@emsdk//:emscripten_deps.bzl", emsdk_emscripten_deps = "emscripten_deps")
+
+emsdk_emscripten_deps(emscripten_version = "4.0.13")
+
+load("@emsdk//:toolchains.bzl", "register_emscripten_toolchains")
+
+register_emscripten_toolchains()

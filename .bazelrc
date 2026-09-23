@@ -922,3 +922,31 @@ build:rbe_cross_compile_macos_x86 --jobs=100
 test:rbe_cross_compile_macos_x86 --jobs=100
 # END MACOS CROSS-COMPILE CONFIGS
 # END CROSS-COMPILE CONFIGS
+
+# WebAssembly builds (ZenID): see build-wasm.sh.
+build:wasm --crosstool_top=@emsdk//emscripten_toolchain:everything
+build:wasm --cpu=wasm
+build:wasm --host_crosstool_top=@bazel_tools//tools/cpp:toolchain
+# Builds flatc and other host tools for the host platform.
+build:wasm --distinct_host_configuration=true
+build:wasm --copt=-msimd128 --copt=-Wno-error --copt=-w
+build:wasm --features=wasm_simd
+build:wasm --define xnn_platform_jit=false
+
+build:wasm_mt --crosstool_top=@emsdk//emscripten_toolchain:everything
+build:wasm_mt --cpu=wasm
+build:wasm_mt --host_crosstool_top=@bazel_tools//tools/cpp:toolchain
+build:wasm_mt --distinct_host_configuration=true
+build:wasm_mt --copt=-pthread --copt=-msimd128 --copt=-Wno-error --copt=-w
+build:wasm_mt --features=wasm_simd
+build:wasm_mt --define xnn_platform_jit=false
+
+# Relaxed SIMD. XNNPACK needs both features: wasm_relaxed_simd adds the wasmrelaxedsimd kernels,
+# wasm_simd keeps the wasmsimd kernels that the relaxed hardware config still uses.
+build:wasm_mt_relaxed --crosstool_top=@emsdk//emscripten_toolchain:everything
+build:wasm_mt_relaxed --cpu=wasm
+build:wasm_mt_relaxed --host_crosstool_top=@bazel_tools//tools/cpp:toolchain
+build:wasm_mt_relaxed --distinct_host_configuration=true
+build:wasm_mt_relaxed --copt=-pthread --copt=-msimd128 --copt=-mrelaxed-simd --copt=-Wno-error --copt=-w
+build:wasm_mt_relaxed --features=wasm_simd --features=wasm_relaxed_simd
+build:wasm_mt_relaxed --define=xnn_platform_jit=false
