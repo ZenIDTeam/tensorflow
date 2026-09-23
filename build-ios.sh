@@ -23,6 +23,8 @@ DEVICE_LIB=TensorFlowLiteC_static_framework-arm64-apple-ios12.0-fl.a
 SIM_LIB=TensorFlowLiteC_ios_sim.a
 
 export BAZELISK_HOME=$CACHE/bazelisk
+# Bazel 6.5.0 (.bazelversion) builds wrapped_clang without LC_UUID, which dyld on macOS 26 refuses to load.
+export USE_BAZEL_VERSION=${USE_BAZEL_VERSION:-6.6.0}
 bazel() { command bazel --output_base="$OB" "$@"; }
 
 # Non-interactive configure; TF_CONFIGURE_IOS links the BUILD.apple files as BUILD.
